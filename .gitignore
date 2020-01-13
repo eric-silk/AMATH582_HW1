@@ -1,3 +1,4 @@
 *.swp
+.ipynb_checkpoints/
 582hw1.pdf*
 Testdata.mat
