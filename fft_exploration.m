@@ -22,6 +22,3 @@ plot(t, yt)
 
 figure();
 hist(abs(Y))
-
-% Now lets try 2D
-t2x= meshgrid(t, t);
