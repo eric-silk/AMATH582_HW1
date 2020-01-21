@@ -13,23 +13,23 @@
 
 \begin{document}
 
-\title{Preparation of Papers for IEEE Signal Processing Letters (5-page limit)}
+\title{AMATH 582 Homework 1: An Ultrasound Problem}
 
-\author{First A. Author, \IEEEmembership{Fellow, IEEE}, Second B. Author, and Third C. Author, Jr., \IEEEmembership{Member, IEEE}
-\thanks{This paragraph of the first footnote will contain the date on which you submitted your paper for review. It will also contain support information, including sponsor and financial support acknowledgment. For example, ``This work was supported in part by the U.S. Department of Commerce under Grant BS123456.'' }
-\thanks{The next few paragraphs should contain the authors' current affiliations, including current address and e-mail. For example, F. A. Author is with the National Institute of Standards and Technology, Boulder, CO 80305 USA (e-mail: author@boulder.nist.gov).}
-\thanks{S. B. Author, Jr., was with Rice University, Houston, TX 77005 USA. He is now with the Department of Physics, Colorado State University, Fort Collins, CO 80523 USA (e-mail: author@lamar.colostate.edu).}}
+\author{Eric A. Silk
+\thanks{Eric Silk is a Masters Student in Applied Mathematics at the University of Washington,
+		and a Research Engineer for Schweitzer Engineering Laboratories, Pullman, WA 99163 (email: esilk16@uw.edu, eric.silk@ericsilk.com)}
+}
 
-\markboth{Journal of \LaTeX\ Class Files, Vol. 14, No. 8, August 2015}
+\markboth{Homework Submission for AMATH 582: Computational Methods for Data Analysis, January 2020}
 {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
 \maketitle
 
 \begin{abstract}
-These instructions give you guidelines for preparing papers for IEEE Signal Processing Letters. Use this document as a template if you are using \LaTeX. Otherwise, use this document as an instruction set. The electronic file of your paper will be formatted further at IEEE. Paper titles should be written in uppercase and lowercase letters, not all uppercase. Do not write ``(Invited)'' in the title. Full names of authors are preferred in the author field, but are not required. Put a space between authors’ initials. The abstract must be a concise yet comprehensive reflection of what is in your article. In particular, the abstract must be self-contained, without abbreviations, footnotes, or references. It should be a microcosm of the full article. The abstract is typically between 100--175 words. The abstract must be written as one paragraph, and should not contain displayed mathematical equations or tabular material. The abstract should include three or four different keywords or phrases, as this will help readers to find it. It is important to avoid over-repetition of such phrases as this can result in a page being rejected by search engines. Ensure that your abstract reads well and is grammatically correct.
+This paper serves to describe the process by which a noisy ultrasound can be cleaned and analyzed to determine the path of an foreign object within the intestines of a dog. Through the use statistical methods, Fast Fourier Transforms, spectrum averaging, and Gaussian filtering, highly noisy data can be resolved into a clear trajectory.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Enter key words or phrases in alphabetical order, separated by commas. For a list of suggested keywords, send a blank e-mail to keywords@ieee.org or visit \url{http://www.ieee.org/organizations/pubs/ani_prod/keywrd98.txt}
+Filter, Fourier, Gaussian, Histogram, Spectrum, Ultrasound
 \end{IEEEkeywords}
 
 
@@ -39,15 +39,30 @@ Enter key words or phrases in alphabetical order, separated by commas. For a lis
 
 \section{Introduction}
 
-\IEEEPARstart{T}{his} document is a template for \LaTeX. If you are reading a paper or PDF version of this document, please download the electronic file, trans\_jour.tex, from the IEEE Web site at \url{http://www.ieee.org/authortools/trans_jour.tex} so you can use it to prepare your manuscript. If you would prefer to use LaTeX, download IEEE's LaTeX style and sample files from the same Web page. You can also explore using the Overleaf editor at {https://www.overleaf.com/blog/278-how-to-use-overleaf-with-ieee-collabratec-your-quick-guide-to-getting-started\#.xsVp6tpPkrKM9}
+\IEEEPARstart{I}{n} the example proposed by Dr. Kutz, a dog has swallowed a marble and it is moving through its intestines. 20 ultrasound measurements were taken sequentially in time, producing three-dimensional matrices of the local magnitudes. Unfortunately, they are highly noisy. In order to determine the trajectory of the marble, filtering must be employed to remove the noise.
 
-If your paper is intended for a conference, please contact your conference editor concerning acceptable word processor formats for your particular conference.  
+\section{Theoretical Background}
+Ultrasounds produce spatial data, indicating the intensity of the reflection of an acoustic wave off of a surface at some distance. Objects produce reflections at characteristic frequencies, even as their physical position may change. This fact can be exploited to isolate a given object within a noisy environment and determine its trajectory through multiple measurements.
 
+Converting a temporal or spatial problem into the frequency domain can be achieved with a Fourier transform:
 
-\section{Guidelines For Manuscript Preparation}
+\begin{equation}
+\hat{f}(\omega)=\int_{-\infty}^{\infty}f(x)e^{-2 \pi jx \omega}dx
+\end{equation}
 
+Given that processing is occurring on a computer, the Discrete Fourier Transform (``DFT'') is used -- in particular, the Fast Fourier Transform (hereafter ``FFT'').
 
-The IEEEtran\_HOWTO.pdf is the complete guide of \LaTeX\ for manuscript preparation included with this stuff. 
+\begin{equation}
+X_{k}=\sum_{n=0}^{N-1}x_{n}e^{-\frac{j2\pi}{N}kn}
+\end{equation}
+
+The FFT works by recursively decomposing the transform into 2 smaller transforms until a prime length is reached (ideally 1) along some branch of the recursion, then shifting the results in a "butterfly" fashion. For this reason, FFT's of size $2^n$ are fastest.
+
+Here, noise is defined as the signal produced by a stochastic, stationary phenomena unrelated the primary signal of interest. These may include the random fluctuations of electrons within the measuring apparatus, movement of fluids within the dog's body, or the process of discretizing analog measurements.
+
+Noise is often characterized by its distribution within the frequency spectrum. For instance, white noise has equal intensities across the whole spectrum, producing a signal with a finite variance and zero mean. Thus, while a single measurement of white noise may produce a fairly energetic spectrum, averaging multiple measurements will tend towards a zero energy spectrum.
+
+Utilizing these pieces of information, the 20 provided measurements can be averaged to force any white noise present towards zero, while preserving the frequency components of the object of interest. Once these frequencies are determined, a filter can be applied to remove noise in individual measurements. Doing so will allow the trajectory of the marble to be determined.
 
 
 \subsection{Information for Authors}

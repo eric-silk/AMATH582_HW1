@@ -3,3 +3,8 @@
 582hw1.pdf*
 Testdata.mat
 *.asv
+*.aux
+*.log
+*.synctex.gz
+*.tex
+*.pdf
