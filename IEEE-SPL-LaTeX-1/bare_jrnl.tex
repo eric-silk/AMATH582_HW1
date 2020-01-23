@@ -10,6 +10,9 @@
 
 \usepackage{graphicx}
 
+% Macro to get code font
+\def\code#1{\texttt{#1}}
+
 
 \begin{document}
 
@@ -44,10 +47,17 @@ Filter, Fourier, Gaussian, Histogram, Spectrum, Ultrasound
 \section{Theoretical Background}
 Ultrasounds produce spatial data, indicating the intensity of the reflection of an acoustic wave off of a surface at some distance. Objects produce reflections at characteristic frequencies, even as their physical position may change. This fact can be exploited to isolate a given object within a noisy environment and determine its trajectory through multiple measurements.
 
+\subsection{Fourier Transforms}
 Converting a temporal or spatial problem into the frequency domain can be achieved with a Fourier transform:
 
 \begin{equation}
 \hat{f}(\omega)=\int_{-\infty}^{\infty}f(x)e^{-2 \pi jx \omega}dx
+\end{equation}
+
+This assumes a given section of data is periodic and fully contained within the range of $-\pi$ to $\pi$. This requires the results be scaled appropriately afterwards.
+
+\begin{equation}
+\omega_{scaled}=\frac{2\pi}{L}\omega_{nominal}
 \end{equation}
 
 Given that processing is occurring on a computer, the Discrete Fourier Transform (``DFT'') is used -- in particular, the Fast Fourier Transform (hereafter ``FFT'').
@@ -58,16 +68,54 @@ X_{k}=\sum_{n=0}^{N-1}x_{n}e^{-\frac{j2\pi}{N}kn}
 
 The FFT works by recursively decomposing the transform into 2 smaller transforms until a prime length is reached (ideally 1) along some branch of the recursion, then shifting the results in a "butterfly" fashion. For this reason, FFT's of size $2^n$ are fastest.
 
+\subsection{Noise}
 Here, noise is defined as the signal produced by a stochastic, stationary phenomena unrelated the primary signal of interest. These may include the random fluctuations of electrons within the measuring apparatus, movement of fluids within the dog's body, or the process of discretizing analog measurements.
 
 Noise is often characterized by its distribution within the frequency spectrum. For instance, white noise has equal intensities across the whole spectrum, producing a signal with a finite variance and zero mean. Thus, while a single measurement of white noise may produce a fairly energetic spectrum, averaging multiple measurements will tend towards a zero energy spectrum.
 
 Utilizing these pieces of information, the 20 provided measurements can be averaged to force any white noise present towards zero, while preserving the frequency components of the object of interest. Once these frequencies are determined, a filter can be applied to remove noise in individual measurements. Doing so will allow the trajectory of the marble to be determined.
 
+\subsection{Gaussian Filter}
+Gaussian filters are commonly used in image processing to reduce noise and smooth data, and are fairly straightforward to implement. As such, it was deemed an appropriate choice for the problem of filtering the data. In one dimension, the Gaussian kernel is:
 
-\subsection{Information for Authors}
+\begin{equation}
+G(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-x_{\omega})^2}{2\sigma^2}}
+\end{equation}
 
-{\em IEEE Signal Processing Letters} allows only four-page articles. A fifth page is allowed for ``References'' only, though ``References'' may begin before the fifth page. Author biographies or photographs are not allowed in Signal Processing Letters. Please review the Information for Authors at for {\em IEEE Signal Processing Letters:} https://signalprocessingsociety.org/publications-resources/ieee-signal-processing-letters/information-authors-spl
+where $x_{omega}$ is the frequency to shift the center of the kernel to. In 3 dimensions:
+
+\begin{equation}
+G(x,y,z)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-x_{\omega})^2+(y-y_{\omega})^2+(z-z_{\omega})^2}{2\sigma^2}}
+\end{equation}
+
+assuming the same variance in all dimensions.
+
+\section{Algorithm Implementation and Development}
+The first portion of work involved exploring the \code{isosurface} plots of each sample, which proved largely fruitless. The data proved to be highly noisy, and attempts at increasing the threshold of the \code{isosurface} plot were ineffective in isolating the trajectory of the marble. Next, \code{fftn} was used to take a multidimensional FFT of each sample. The results of these were also plotted via \code{isosurface} (taking care to \code{fftshift} the data) with little success -- the Fourier transform of noisy data produces a noisy spectrum.
+
+% TODO figures of each here
+
+A loop was used to sum each sample's spectrum together, before dividing by the number of samples to average the spectrums. This was done to take advantage of the previously mentioned zero mean of noise. In addition, while looping, a histogram of the absolute value of the spectrum was plotted. Finally, a histogram of the resulting averaged spectrum was plotted to visually verify the shift in the spectrum.
+
+% TODO figures of each here
+
+This averaged spectrum was then plotted via \code{isosurface}, with increasing thresholds (informed by the distribution of the histogram). A more rigorous, fully automatic method (e.g. threshold on percentile) would be preferred in a production environment. From this a trend to exclude more and more noise can be seen visually.
+
+% TODO plotz
+
+Using the most stringent \code{isosurface} threshold, the plot was manually inspected to determine the location of the maxima of the whole spectrum. These indices were used to set the guassian kernel offsets. The kernels standard deviation was selected somewhat arbitrarily as 1, but the results appeared satisfactory.
+
+To apply the filter, each spectrum was \code{fftshift}-ed and multiplied by the filter kernel, a process commonly known as convolution. This process could likely be optimized to be more performant if the volume of data was larger or there were specific latency requirements, but no preemptive attempts were made. The results were then again \code{fftshift}-ed and an inverse FFT was taken via \code{ifftn} to bring each filtered spectrum into the spatial domain.
+
+Within each loop, another histogram was taken and plotted to determine verify the proper application of the filter and to determine an appropriate cutoff for \code{isosurface} plots.
+
+% TODO Hists
+
+Initially, each \code{isosurface} was plotted separately, but this was converted to plot each on the same figure in order to show the trajectory of the marble. To indicate the temporal trend of each sample, each isosurface was shaded differently, going from light to dark in time.
+
+% TODO: ISOSURFACE trend here!
+
+Finally, per the requirements of the assignment, the peak of each filtered spatial sample was used to plot the trajectory with \code{plot3}.
 
 
 
