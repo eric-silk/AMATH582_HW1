@@ -135,12 +135,12 @@ ylabel("Y")
 zlabel("Z")
 hold on;
 
-num = SAMPLES
-den = num + 1
-init_color = num / den
-color_iter = -[1/den 1/den 1/den]
+num = SAMPLES;
+den = num + 1;
+init_color = num / den;
+color_iter = -[1/den 1/den 1/den];
 facecolor = [init_color init_color init_color];
-for j=1:20
+for j=1:SAMPLES
     tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
     fft_tmp = fftshift(fftn(tmp));
     filtered = fft_tmp .* gauss_filter;
@@ -153,3 +153,27 @@ for j=1:20
     grid on;
     facecolor = facecolor + color_iter;
 end
+
+% Now lets do the plot3 trajectory plot
+x3d = zeros(SAMPLES);
+y3d = zeros(SAMPLES);
+z3d = zeros(SAMPLES);
+for j=1:SAMPLES
+    tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
+    fft_tmp = fftshift(fftn(tmp));
+    filtered = fft_tmp .* gauss_filter;
+    filtered_time = ifftn(fftshift(filtered));
+    [max_val, max_index] = max(filtered_time(:));
+    [indx, indy, indz] = ind2sub(size(filtered_time), max_index);
+    if not (max(tmp(:)) == tmp(indx, indy, indz))
+        disp("Ya done goofed, A-A-ron!")
+    end
+    x3d(j) = indx;
+    y3d(j) = indy;
+    z3d(j) = indz;
+end
+
+figure
+plot3(x3d, y3d, z3d)
+
+disp("It's over...it's done.")
