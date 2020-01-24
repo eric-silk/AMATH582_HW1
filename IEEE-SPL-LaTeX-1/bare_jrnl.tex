@@ -66,7 +66,7 @@ Given that processing is occurring on a computer, the Discrete Fourier Transform
 X_{k}=\sum_{n=0}^{N-1}x_{n}e^{-\frac{j2\pi}{N}kn}
 \end{equation}
 
-The FFT works by recursively decomposing the transform into 2 smaller transforms until a prime length is reached (ideally 1) along some branch of the recursion, then shifting the results in a "butterfly" fashion. For this reason, FFT's of size $2^n$ are fastest.
+The FFT works by recursively decomposing the transform into 2 smaller transforms until a prime length is reached (ideally 1) along some branch of the recursion, then shifting the results in a "butterfly" fashion. For this reason, FFT's of size $2^n$ are fastest, but any vector with small prime factors will perform reasonably quickly.
 
 \subsection{Noise}
 Here, noise is defined as the signal produced by a stochastic, stationary phenomena unrelated the primary signal of interest. These may include the random fluctuations of electrons within the measuring apparatus, movement of fluids within the dog's body, or the process of discretizing analog measurements.
@@ -115,7 +115,9 @@ Initially, each \code{isosurface} was plotted separately, but this was converted
 
 % TODO: ISOSURFACE trend here!
 
-Finally, per the requirements of the assignment, the peak of each filtered spatial sample was used to plot the trajectory with \code{plot3}.
+Finally, per the requirements of the assignment, the peak of each filtered spatial sample was used to plot the trajectory with \code{plot3}, along with careful scaling of the indices to reflect the spatial domain.
+
+
 
 
 
@@ -170,177 +172,6 @@ column width unless when necessary.
 \centerline{\includegraphics[width=\columnwidth]{fig1.png}}
 \caption{Magnetization as a function of applied field. Note that ``Fig.'' is abbreviated. There is a period after the figure number, followed by two spaces. It is good practice to explain the significance of the figure in the caption.}
 \end{figure}
-
-\begin{table}
-\caption{Units for Magnetic Properties}
-\label{table}
-\small
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{|p{25pt}|p{75pt}|p{110pt}|}
-\hline
-Symbol& 
-Quantity& 
-Conversion from Gaussian and \par CGS EMU to SI$^{\mathrm{a}}$ \\
-\hline
-$\Phi $& 
-Magnetic flux& 
-1 Mx $\to  10^{-8}$ Wb $= 10^{-8}$ V $\cdot$ s \\
-$B$& 
-Magnetic flux density, \par magnetic induction& 
-1 G $\to  10^{-4}$ T $= 10^{-4}$ Wb/m$^{2}$ \\
-$H$& 
-Magnetic field strength& 
-1 Oe $\to  10^{-3}/(4\pi )$ A/m \\
-$m$& 
-Magnetic moment& 
-1 erg/G $=$ 1 emu \par $\to 10^{-3}$ A $\cdot$ m$^{2} = 10^{-3}$ J/T \\
-$M$& 
-Magnetization& 
-1 erg/(G $\cdot$ cm$^{3}) =$ 1 emu/cm$^{3}$ \par $\to 10^{-3}$ A/m \\
-4$\pi M$& 
-Magnetization& 
-1 G $\to  10^{-3}/(4\pi )$ A/m \\
-$\sigma $& 
-Specific magnetization& 
-1 erg/(G $\cdot$ g) $=$ 1 emu/g $\to $ 1 A $\cdot$ m$^{2}$/kg \\
-$j$& 
-Magnetic dipole \par moment& 
-1 erg/G $=$ 1 emu \par $\to 4\pi \times  10^{-10}$ Wb $\cdot$ m \\
-$J$& 
-Magnetic polarization& 
-1 erg/(G $\cdot$ cm$^{3}) =$ 1 emu/cm$^{3}$ \par $\to 4\pi \times  10^{-4}$ T \\
-$\chi , \kappa $& 
-Susceptibility& 
-1 $\to  4\pi $ \\
-$\chi_{\rho }$& 
-Mass susceptibility& 
-1 cm$^{3}$/g $\to  4\pi \times  10^{-3}$ m$^{3}$/kg \\
-$\mu $& 
-Permeability& 
-1 $\to  4\pi \times  10^{-7}$ H/m \par $= 4\pi \times  10^{-7}$ Wb/(A $\cdot$ m) \\
-$\mu_{r}$& 
-Relative permeability& 
-$\mu \to \mu_{r}$ \\
-$w, W$& 
-Energy density& 
-1 erg/cm$^{3} \to  10^{-1}$ J/m$^{3}$ \\
-$N, D$& 
-Demagnetizing factor& 
-1 $\to  1/(4\pi )$ \\
-\hline
-\multicolumn{3}{p{251pt}}{Vertical lines are optional in tables. Statements that serve as captions for 
-the entire table do not need footnote letters. }\\
-\multicolumn{3}{p{251pt}}{$^{\mathrm{a}}$Gaussian units are the same as cg emu for magnetostatics; Mx 
-$=$ maxwell, G $=$ gauss, Oe $=$ oersted; Wb $=$ weber, V $=$ volt, s $=$ 
-second, T $=$ tesla, m $=$ meter, A $=$ ampere, J $=$ joule, kg $=$ 
-kilogram, H $=$ henry.}
-\end{tabular}
-\label{tab1}
-\end{table}
-
-
-\subsection{Resolution }
-The proper resolution of your figures will depend on the type of figure it 
-is as defined in the ``Types of Figures'' section. Author photographs, 
-color, and grayscale figures should be at least 300dpi. Line art, including 
-tables should be a minimum of 600dpi.
-
-\subsection{Vector Art}
-In order to preserve the figures' integrity across multiple computer 
-platforms, we accept files in the following formats: .EPS/.PDF/.PS. All 
-fonts must be embedded or text converted to outlines in order to achieve the 
-best-quality results.
-
-
-\subsection{Accepted Fonts Within Figures}
-When preparing your graphics IEEE suggests that you use of one of the 
-following Open Type fonts: Times New Roman, Helvetica, Arial, Cambria, and 
-Symbol. If you are supplying EPS, PS, or PDF files all fonts must be 
-embedded. Some fonts may only be native to your operating system; without 
-the fonts embedded, parts of the graphic may be distorted or missing.
-
-A safe option when finalizing your figures is to strip out the fonts before 
-you save the files, creating ``outline'' type. This converts fonts to 
-artwork what will appear uniformly on any screen.
-
-\subsection{Using Labels Within Figures}
-
-\subsubsection{Figure Axis labels }
-Figure axis labels are often a source of confusion. Use words rather than 
-symbols. As an example, write the quantity ``Magnetization,'' or 
-``Magnetization M,'' not just ``M.'' Put units in parentheses. Do not label 
-axes only with units. As in Fig. 1, for example, write ``Magnetization 
-(A/m)'' or ``Magnetization (A$\cdot$m$^{-1}$),'' not just ``A/m.'' Do not label axes with a ratio of quantities and 
-units. For example, write ``Temperature (K),'' not ``Temperature/K.'' 
-
-Multipliers can be especially confusing. Write ``Magnetization (kA/m)'' or 
-``Magnetization (10$^{3}$ A/m).'' Do not write ``Magnetization 
-(A/m)$\,\times\,$1000'' because the reader would not know whether the top 
-axis label in Fig. 1 meant 16000 A/m or 0.016 A/m. Figure labels should be 
-legible, approximately 8 to 10 point type.
-
-\subsubsection{Subfigure Labels in Multipart Figures and Tables}
-Multipart figures should be combined and labeled before final submission. 
-Labels should appear centered below each subfigure in 8 point Times New 
-Roman font in the format of (a) (b) (c). 
-
-\subsection{File Naming}
-Figures (line artwork or photographs) should be named starting with the 
-first 5 letters of the author's last name. The next characters in the 
-filename should be the number that represents the sequential 
-location of this image in your article. For example, in author 
-``Anderson's'' paper, the first three figures would be named ander1.tif, 
-ander2.tif, and ander3.ps.
-
-Tables should contain only the body of the table (not the caption) and 
-should be named similarly to figures, except that `.t' is inserted 
-in-between the author's name and the table number. For example, author 
-Anderson's first three tables would be named ander.t1.tif, ander.t2.ps, 
-ander.t3.eps.
-
-\subsection{Referencing a Figure or Table Within Your Paper}
-When referencing your figures and tables within your paper, use the 
-abbreviation ``Fig.'' even at the beginning of a sentence. Do not abbreviate 
-``Table.'' Tables should be numbered with Roman Numerals.
-
-\subsection{Checking Your Figures: The IEEE Graphics Analyzer}
-The IEEE Graphics Analyzer enables authors to pre-screen their graphics for 
-compliance with IEEE Transactions and Journals standards before submission. 
-The online tool, located at
-\underline{http://graphicsqc.ieee.org/}, allows authors to 
-upload their graphics in order to check that each file is the correct file 
-format, resolution, size and colorspace; that no fonts are missing or 
-corrupt; that figures are not compiled in layers or have transparency, and 
-that they are named according to the IEEE Transactions and Journals naming 
-convention. At the end of this automated process, authors are provided with 
-a detailed report on each graphic within the web applet, as well as by 
-email.
-
-For more information on using the Graphics Analyzer or any other graphics 
-related topic, contact the IEEE Graphics Help Desk by e-mail at 
-graphics@ieee.org.
-
-\subsection{Submitting Your Graphics}
-Because IEEE will do the final formatting of your paper,
-you do not need to position figures and tables at the top and bottom of each 
-column. In fact, all figures, figure captions, and tables can be placed at 
-the end of your paper. In addition to, or even in lieu of submitting figures 
-within your final manuscript, figures should be submitted individually, 
-separate from the manuscript in one of the file formats listed above in 
-Section \ref{formats}. Place figure captions below the figures; place table titles 
-above the tables. Please do not include captions as part of the figures, or 
-put them in ``text boxes'' linked to the figures. Also, do not place borders 
-around the outside of your figures.
-
-\subsection{Color Processing/Printing in IEEE Journals}
-All IEEE Transactions, Journals, and Letters allow an author to publish 
-color figures on IEEE Xplore\textregistered\ at no charge, and automatically 
-convert them to grayscale for print versions. In most journals, figures and 
-tables may alternatively be printed in color if an author chooses to do so. 
-Please note that this service comes at an extra expense to the author. If 
-you intend to have print color graphics, include a note with your final 
-paper indicating which figures or tables you would like to be handled that 
-way, and stating that you are willing to pay the additional fee.
 
 
 \section{Conclusion}

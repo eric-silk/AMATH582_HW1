@@ -5,6 +5,8 @@ clear all; close all; clc;
 % time -- 5 minutes is not unrealistic.
 % If PLOT_ALL_*_SURFACES is set to false, the user must
 % press enter to continue after each plot
+%
+% Woe to ye with shoddy cooling
 PLOT_TIME_ISOSURFACE = false;
 PLOT_ALL_TIME_SURFACES = false;
 PLOT_FREQ_ISOSURFACE = false;
@@ -28,12 +30,15 @@ if PLOT_TIME_ISOSURFACE
         Un(:,:,:)=reshape(Undata(j,:),n,n,n);
         isosurface(X,Y,Z,abs(Un),1.25)
         axis([-20 20 -20 20 -20 20]), grid on;
-        if not PLOT_ALL_TIME_SURFACES
+        if ~(PLOT_ALL_TIME_SURFACES)
             drawnow;
             input("Press ENTER to continue...");
             close all;
         end
-        
+        title(sprintf("Spatial Isosurface %u, threshold=1.25", j))
+        xlabel("X (distance)")
+        ylabel("Y (distance)")
+        zlabel("Z (distance)")
     end
     drawnow;
 end
@@ -45,13 +50,16 @@ if PLOT_FREQ_ISOSURFACE
         Un(:,:,:)=reshape(Undata(j,:),n,n,n);
         Un_fft=fftn(Un);
         isosurface(Kx,Ky,Kz,abs(fftshift(Un_fft)))
-        axis([-2*pi 2*pi -2*pi 2*pi -2*pi 2*pi])
-        grid on
-        if not PLOT_ALL_FREQ_SURFACES
+        axis([-2*pi 2*pi -2*pi 2*pi -2*pi 2*pi]), grid on;
+        if ~(PLOT_ALL_FREQ_SURFACES)
             drawnow;
             input("Press ENTER to contiue...");
             close all;
         end
+        title(sprintf("Frequency Isosurface %u, threshold=automatic", j))
+        xlabel("X (cycles per distance)")
+        ylabel("Y (cycles per distance)")
+        zlabel("Z (cycles per distance)")
     end
     drawnow;
 end
@@ -65,7 +73,6 @@ for j=1:SAMPLES
     tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
     fft_tmp = fftn(tmp);
     subplot(4,5,j)
-    % Note: not norming yet!
     histogram(abs(fft_tmp))
     title(sprintf("Sample %d", j))
     averaged_spectrum = averaged_spectrum + fft_tmp;
@@ -111,9 +118,9 @@ figure();
 title(sprintf("Filter kernel\nsigma=%.1f, mu_x=%.3f, mu_y=%.3f, mu_z=%.3f", sigma_x, mu_x, mu_y, mu_z));
 isosurface(Kx, Ky, Kz, gauss_filter, 0.9);
 axis([-2*pi 2*pi -2*pi 2*pi -2*pi 2*pi]);
-xlabel("Frequency, X")
-ylabel("Frequency, Y")
-zlabel("Frequency, Z")
+xlabel("X (cycles per distance)")
+ylabel("Y (cycles per distance)")
+zlabel("Z (cycles per distance)")
 grid on, drawnow
 
 figure();
@@ -121,7 +128,7 @@ for j=1:20
     tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
     fft_tmp = fftshift(fftn(tmp));
     filtered = fft_tmp.*gauss_filter;
-    filtered_time = ifftn(fftshift(filtered));
+    filtered_time = ifftshift(ifftn(filtered));
     subplot(4,5,j);
     histogram(abs(filtered_time));
     title(sprintf("Sample %d", j))
@@ -132,9 +139,9 @@ sgtitle({"Histograms of Filtered Spectrums",...
 % Colors, dark to light for time
 figure();
 title("Progress of Marble in Fluffy's innards")
-xlabel("X")
-ylabel("Y")
-zlabel("Z")
+xlabel("X (distance)")
+ylabel("Y (distance)")
+zlabel("Z (distance)")
 hold on;
 
 num = SAMPLES;
@@ -146,15 +153,15 @@ for j=1:SAMPLES
     tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
     fft_tmp = fftshift(fftn(tmp));
     filtered = fft_tmp .* gauss_filter;
-    filtered_time = ifftn(fftshift(filtered));
-    hiso = patch(isosurface(X, Y, Z, abs(filtered_time), 0.3),...
+    filtered_time = ifftn(ifftshift(filtered));
+    hiso = patch(isosurface(-X, Y, Z, abs(filtered_time), 0.35),...
                  'FaceColor', facecolor,...
                  'EdgeColor', 'none');
     isonormals(abs(filtered_time), hiso);
-    axis([-20 20 -20 20 -20 20]);
-    grid on;
     facecolor = facecolor + color_iter;
 end
+axis([-20 20 -20 20 -20 20]);
+grid on;
 
 % Now lets do the plot3 trajectory plot
 x3d = zeros(1, SAMPLES);
@@ -164,11 +171,11 @@ for j=1:SAMPLES
     tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
     fft_tmp = fftshift(fftn(tmp));
     filtered = fft_tmp .* gauss_filter;
-    filtered_time = ifftn(fftshift(filtered));
+    filtered_time = abs(ifftn(fftshift(filtered)));
     [max_val, max_index] = max(filtered_time(:));
     [indx, indy, indz] = ind2sub(size(filtered_time), max_index);
     if not (max(filtered_time(:)) == filtered_time(indx, indy, indz))
-        disp("Ya done goofed, A-A-ron!")
+        disp("Ya done messed up, A-A-ron!")
     end
     x3d(j) = indx;
     y3d(j) = indy;
@@ -176,19 +183,23 @@ for j=1:SAMPLES
 end
 
 % scale indices to spatial domain
+disp(x3d)
 x3d = (x3d-32)*(2*L)/n;
+disp(x3d)
+disp(y3d)
 y3d = (y3d-32)*(2*L)/n;
+disp(y3d)
+disp(z3d)
 z3d = (z3d-32)*(2*L)/n;
+disp(z3d)
 
 figure
 plot3(x3d, y3d, z3d)
 axis([-20 20 -20 20 -20 20])
 grid on;
-xlabel("X")
-ylabel("Y")
-zlabel("Z")
+xlabel("X (distance)")
+ylabel("Y (distance)")
+zlabel("Z (distance)")
 title({"Trajectory of the maximum value of the filtered ultrasound data"...
         "Trend is downwards in time."})
 disp(sprintf("Direct the blast at (%u, %u, %u).", x3d(SAMPLES), y3d(SAMPLES), z3d(SAMPLES)))
-
-disp("It's over...it's done.")
