@@ -27,12 +27,13 @@ if PLOT_TIME_ISOSURFACE
         figure();
         Un(:,:,:)=reshape(Undata(j,:),n,n,n);
         isosurface(X,Y,Z,abs(Un),1.25)
-        axis([-20 20 -20 20 -20 20]), grid on
+        axis([-20 20 -20 20 -20 20]), grid on;
         if not PLOT_ALL_TIME_SURFACES
             drawnow;
             input("Press ENTER to continue...");
             close all;
         end
+        
     end
     drawnow;
 end
@@ -69,15 +70,16 @@ for j=1:SAMPLES
     title(sprintf("Sample %d", j))
     averaged_spectrum = averaged_spectrum + fft_tmp;
 end
-sgtitle({"Spectrum Histograms", "X axis: Absolute Magnitude, Y axis: Count"})
+sgtitle({"Spectrum Histograms",...
+         "X axis: Absolute Magnitude, Y axis: Count"})
 
 % Now get the average instead of just sum
 averaged_spectrum = abs(averaged_spectrum) / SAMPLES;
 figure
 histogram(averaged_spectrum)
-title("Averaged Spectrum")
 xlabel("Spectrum Magnitude")
 ylabel("Count")
+title("Averaged Spectrum")
 
 plot_spectrum_isosurface(Kx, Ky, Kz, averaged_spectrum, 100);
 title("Averaged Spectrum, Surface=100")
@@ -155,9 +157,9 @@ for j=1:SAMPLES
 end
 
 % Now lets do the plot3 trajectory plot
-x3d = zeros(SAMPLES);
-y3d = zeros(SAMPLES);
-z3d = zeros(SAMPLES);
+x3d = zeros(1, SAMPLES);
+y3d = zeros(1, SAMPLES);
+z3d = zeros(1, SAMPLES);
 for j=1:SAMPLES
     tmp(:,:,:) = reshape(Undata(j, :), n, n, n);
     fft_tmp = fftshift(fftn(tmp));
@@ -165,7 +167,7 @@ for j=1:SAMPLES
     filtered_time = ifftn(fftshift(filtered));
     [max_val, max_index] = max(filtered_time(:));
     [indx, indy, indz] = ind2sub(size(filtered_time), max_index);
-    if not (max(tmp(:)) == tmp(indx, indy, indz))
+    if not (max(filtered_time(:)) == filtered_time(indx, indy, indz))
         disp("Ya done goofed, A-A-ron!")
     end
     x3d(j) = indx;
@@ -173,7 +175,20 @@ for j=1:SAMPLES
     z3d(j) = indz;
 end
 
+% scale indices to spatial domain
+x3d = (x3d-32)*(2*L)/n;
+y3d = (y3d-32)*(2*L)/n;
+z3d = (z3d-32)*(2*L)/n;
+
 figure
 plot3(x3d, y3d, z3d)
+axis([-20 20 -20 20 -20 20])
+grid on;
+xlabel("X")
+ylabel("Y")
+zlabel("Z")
+title({"Trajectory of the maximum value of the filtered ultrasound data"...
+        "Trend is downwards in time."})
+disp(sprintf("Direct the blast at (%u, %u, %u).", x3d(SAMPLES), y3d(SAMPLES), z3d(SAMPLES)))
 
 disp("It's over...it's done.")
