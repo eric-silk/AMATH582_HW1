@@ -82,7 +82,7 @@ Gaussian filters are commonly used in image processing to reduce noise and smoot
 G(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-x_{\omega})^2}{2\sigma^2}}
 \end{equation}
 
-where $x_{omega}$ is the frequency to shift the center of the kernel to. In 3 dimensions:
+where $x_{\omega}$ is the frequency to shift the center of the kernel to. In 3 dimensions:
 
 \begin{equation}
 G(x,y,z)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-x_{\omega})^2+(y-y_{\omega})^2+(z-z_{\omega})^2}{2\sigma^2}}
@@ -91,7 +91,7 @@ G(x,y,z)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-x_{\omega})^2+(y-y_{\omega})^
 assuming the same variance in all dimensions.
 
 \section{Algorithm Implementation and Development}
-The first portion of work involved exploring the \code{isosurface} plots of each sample, which proved largely fruitless. The data proved to be highly noisy, and attempts at increasing the threshold of the \code{isosurface} plot were ineffective in isolating the trajectory of the marble. Next, \code{fftn} was used to take a multidimensional FFT of each sample. The results of these were also plotted via \code{isosurface} (taking care to \code{fftshift} the data) with little success -- the Fourier transform of noisy data produces a noisy spectrum.
+The first portion of work involved exploring the \code{isosurface} plots of each sample, which proved largely fruitless. The data is highly noisy, and attempts at increasing the threshold of the \code{isosurface} plot were ineffective in isolating the trajectory of the marble. Next, \code{fftn} was used to take a multidimensional FFT of each sample. The absolute value of the results of these were also plotted via \code{isosurface} (taking care to \code{fftshift} the data) with little success -- the Fourier transform of noisy data produces a noisy spectrum.
 
 % TODO figures of each here
 
