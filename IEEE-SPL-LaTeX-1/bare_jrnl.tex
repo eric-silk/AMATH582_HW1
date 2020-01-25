@@ -9,6 +9,8 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 \usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=cyan}
 
 % Macro to get code font
 \def\code#1{\texttt{#1}}
@@ -78,7 +80,7 @@ Here, noise is defined as the signal produced by a stochastic, stationary phenom
 
 Noise is often characterized by its distribution within the frequency spectrum. For instance, white noise has equal intensities across the whole spectrum, producing a signal with a finite variance and zero mean. Thus, while a single measurement of white noise may produce a fairly energetic spectrum, averaging multiple measurements will tend towards a zero energy spectrum.
 
-Utilizing these pieces of information, the 20 provided measurements can be averaged to force any white noise present towards zero, while preserving the frequency components of the object of interest. Once these frequencies are determined, a filter can be applied to remove noise in individual measurements. Doing so will allow the trajectory of the marble to be determined.
+Utilizing these pieces of information, the 20 provided measurements can be averaged in the Fourier domain to force any white noise present towards zero, while preserving the frequency components of the object of interest. Once these frequencies are determined, a filter can be applied to remove noise in individual measurements. Doing so will allow the trajectory of the marble to be determined.
 
 \subsection{Gaussian Filter}
 Gaussian filters are commonly used in image processing to reduce noise and smooth data, and are fairly straightforward to implement. As such, it was deemed an appropriate choice for the problem of filtering the data. They can be created in arbitrary dimensions, including 1D (Equation \ref{gauss1D}) and 3D (Equation \ref{gauss3D})
@@ -237,5 +239,11 @@ Given a linear index and the shape of a data structure, converts from a linear i
 Given 3 vectors of positions in time (x, y, and z), produce a 3D plot of the path.
 \subsection{Plotting Functions}
 Functions, such as \code{figure}, \code{axis}, \code{subplot}, etc., are deemed trivially understood/searched for and thus not explained here.
+
+\newpage
+\clearpage
+\newpage
+\section{Appendix B: Matlab Code}
+See my \href{https://github.com/eric-silk/AMATH582_HW1}{Github} for the full repository, including this source code for this IEEE template Latex document.
 
 \end{document}

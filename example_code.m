@@ -1,5 +1,4 @@
 clear all; close all; clc;
-
 % Configuration Constants
 % Note that plotting all isosurfaces will take considerable
 % time -- 5 minutes is not unrealistic.
@@ -135,7 +134,6 @@ for j=1:20
 end
 sgtitle({"Histograms of Filtered Spectrums",...
          "X axis: Absolute Magnitude, Y axis: Count"})
-
 % Colors, dark to light for time
 figure();
 title("Progress of Marble in Fluffy's innards")
@@ -198,4 +196,5 @@ ylabel("Y (distance)")
 zlabel("Z (distance)")
 title({"Trajectory of the maximum value of the filtered ultrasound data"...
         "Trend is downwards in time."})
-disp(sprintf("Direct the blast at (%u, %u, %u).", x3d(SAMPLES), y3d(SAMPLES), z3d(SAMPLES)))
+disp(sprintf("Direct the blast at (%u, %u, %u).",...
+    x3d(SAMPLES), y3d(SAMPLES), z3d(SAMPLES)))
