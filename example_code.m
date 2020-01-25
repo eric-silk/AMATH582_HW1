@@ -154,7 +154,9 @@ for j=1:SAMPLES
     fft_tmp = fftshift(fftn(tmp));
     filtered = fft_tmp .* gauss_filter;
     filtered_time = ifftn(ifftshift(filtered));
-    hiso = patch(isosurface(-X, Y, Z, abs(filtered_time), 0.35),...
+    % Swap the X and Y to account for the differences in indexing
+    % between meshgrid and ind2sub
+    hiso = patch(isosurface(Y, X, Z, abs(filtered_time), 0.35),...
                  'FaceColor', facecolor,...
                  'EdgeColor', 'none');
     isonormals(abs(filtered_time), hiso);
@@ -183,15 +185,9 @@ for j=1:SAMPLES
 end
 
 % scale indices to spatial domain
-disp(x3d)
 x3d = (x3d-32)*(2*L)/n;
-disp(x3d)
-disp(y3d)
 y3d = (y3d-32)*(2*L)/n;
-disp(y3d)
-disp(z3d)
 z3d = (z3d-32)*(2*L)/n;
-disp(z3d)
 
 figure
 plot3(x3d, y3d, z3d)
